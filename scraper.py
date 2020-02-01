@@ -13,7 +13,7 @@ def get_soup(url):
         logger.warning(f'Couldn\'t get a response from "{url}"')
 
 def sneak_info():
-    soup = get_soup('https://www.cinema-arthouse.de/kino/programm/ov-sneakpreview')
+    soup = get_soup(SNEAK_URL)
     if soup is None:
         return None
     return SNEAK_INFO_MESSAGE.format(soup.select(NEXT_SNEAK_CSS_SELECTOR)[0].text)
