@@ -8,7 +8,7 @@ logger = logging.getLogger(__name__)
 def get_soup(url):
     response = requests.get(url)
     if response.ok:
-        return BeautifulSoup(response.text, 'lxml')
+        return BeautifulSoup(response.text, 'html.parser')
     else:
         logger.warning(f'Couldn\'t get a response from "{url}"')
 
