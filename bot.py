@@ -47,6 +47,7 @@ def main():
 
     updater.dispatcher.add_handler(MessageHandler(Filters.all, message))
     updater.dispatcher.add_handler(CallbackQueryHandler(button))
+    updater.dispatcher.add_error_handler(error)
 
     updater.start_polling()
     updater.idle()
