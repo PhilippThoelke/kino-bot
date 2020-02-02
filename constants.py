@@ -29,3 +29,6 @@ NEXT_SNEAK_CSS_SELECTOR = 'div.wpb_text_column:nth-child(3) > div:nth-child(1) >
 LAST_SNEAKS_ROW_CSS_SELECTOR = 'wpb_column vc_column_container vc_col-sm-3'
 ####################################################################
 SNEAK_URL = 'https://www.cinema-arthouse.de/kino/programm/ov-sneakpreview'
+####################################################################
+LOG_FOLDER = 'logs'
+UPDATE_HISTORY_LOG_FREQUENCY = 25

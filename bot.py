@@ -4,10 +4,22 @@ from telegram.ext import Updater, Filters, MessageHandler, CallbackQueryHandler
 from constants import *
 from bot_token import TOKEN
 from scraper import sneak_info, last_sneak_movies
+import pickle
+import os
 
 logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
                     level=logging.INFO)
 logger = logging.getLogger(__name__)
+
+def store_update(update):
+    if not os.path.exists(LOG_FOLDER):
+        os.mkdir(LOG_FOLDER)
+    with open(os.path.join(LOG_FOLDER, f'update-{update.update_id}.pickle'), 'wb') as file:
+        pickle.dump(update, file)
+
+    log_files = os.listdir(LOG_FOLDER)
+    if len(log_files) % UPDATE_HISTORY_LOG_FREQUENCY == 0:
+        logger.info(f'Currently storing {len(log_files)} update files')
 
 def get_keyboard_markup(menu=None):
     if menu == LAST_SNEAKS_MENU:
@@ -31,6 +43,7 @@ def show_start_menu(update, context):
 
 def message(update, context):
     show_start_menu(update, context)
+    store_update(update)
 
 def button(update, context):
     if update.callback_query.data == SNEAK_CALLBACK:
@@ -58,6 +71,7 @@ def button(update, context):
     else:
         update.callback_query.edit_message_text(text=INTERNAL_ERROR_MESSAGE)
         show_start_menu(update, context)
+    store_update(update)
 
 def error(update, context):
     logger.warning(f'Update "{update}" caused error "{context.error}"')

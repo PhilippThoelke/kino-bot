@@ -130,3 +130,6 @@ dmypy.json
 
 # file containing the bot token
 bot_token.py
+
+# log files
+logs/
