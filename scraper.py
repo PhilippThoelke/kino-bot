@@ -20,7 +20,7 @@ def sneak_info():
 
 def last_sneak_movies(amount=None):
     soup = get_soup(SNEAK_URL)
-    rows = soup.find_all('div', class_='wpb_column vc_column_container vc_col-sm-3')
+    rows = soup.find_all('div', class_=LAST_SNEAKS_ROW_CSS_SELECTOR)
 
     movies = []
     for row in rows[::2]:
@@ -39,7 +39,18 @@ def last_sneak_movies(amount=None):
                         break
             if not rating_found:
                 movies.append((movie[0], None))
-    if amount is not None and amount > 0:
-        return movies[:amount]
+
+    if amount == 1:
+        message = LAST_1_SNEAKS_MESSAGE
+        movies = movies[:1]
+    elif amount is None:
+        message = LAST_SNEAKS_MESSAGE.format(len(movies))
     else:
-        return movies
+        message = LAST_SNEAKS_MESSAGE.format(amount)
+        movies = movies[:amount]
+
+    for movie, rating in movies:
+        if rating is None:
+            rating = 'keine Bewertung'
+        message += f'\n{movie} ({rating})'
+    return message

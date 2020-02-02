@@ -9,10 +9,15 @@ logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s
                     level=logging.INFO)
 logger = logging.getLogger(__name__)
 
-
 def get_keyboard_markup(menu=None):
-    if menu == 0:
-        pass
+    if menu == LAST_SNEAKS_MENU:
+        buttons = [
+            [InlineKeyboardButton(LAST_1_SNEAKS_BUTTON_TEXT, callback_data=LAST_1_SNEAKS_CALLBACK),
+             InlineKeyboardButton(LAST_5_SNEAKS_BUTTON_TEXT, callback_data=LAST_5_SNEAKS_CALLBACK),
+             InlineKeyboardButton(LAST_10_SNEAKS_BUTTON_TEXT, callback_data=LAST_10_SNEAKS_CALLBACK)],
+            [InlineKeyboardButton(LAST_ALL_SNEAKS_BUTTON_TEXT, callback_data=LAST_ALL_SNEAKS_CALLBACK)]
+        ]
+        return InlineKeyboardMarkup(buttons)
     else:
         return InlineKeyboardMarkup.from_column([
             InlineKeyboardButton(SNEAK_BUTTON_TEXT, callback_data=SNEAK_CALLBACK),
@@ -36,13 +41,19 @@ def button(update, context):
             update.callback_query.edit_message_text(text=next_sneak)
         show_start_menu(update, context)
     elif update.callback_query.data == LAST_SNEAKS_CALLBACK:
-        movies = last_sneak_movies()
-        message = 'Bisheringe Filme in der Sneak Preview:'
-        for movie, rating in movies:
-            if rating is None:
-                rating = 'keine Bewertung'
-            message += f'\n{movie} ({rating})'
-        update.callback_query.edit_message_text(text=message)
+        update.callback_query.edit_message_text(text=SELECT_N_LAST_SNEAKS_MESSAGE,
+                                                reply_markup=get_keyboard_markup(LAST_SNEAKS_MENU))
+    elif update.callback_query.data == LAST_1_SNEAKS_CALLBACK:
+        update.callback_query.edit_message_text(text=last_sneak_movies(1))
+        show_start_menu(update, context)
+    elif update.callback_query.data == LAST_5_SNEAKS_CALLBACK:
+        update.callback_query.edit_message_text(text=last_sneak_movies(5))
+        show_start_menu(update, context)
+    elif update.callback_query.data == LAST_10_SNEAKS_CALLBACK:
+        update.callback_query.edit_message_text(text=last_sneak_movies(10))
+        show_start_menu(update, context)
+    elif update.callback_query.data == LAST_ALL_SNEAKS_CALLBACK:
+        update.callback_query.edit_message_text(text=last_sneak_movies())
         show_start_menu(update, context)
     else:
         update.callback_query.edit_message_text(text=INTERNAL_ERROR_MESSAGE)
